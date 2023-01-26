@@ -34,6 +34,26 @@ public class CheckoutPipelineTest {
     @Test
     void executeAllPassedCheckoutSteps() {
         // Exercise - implement testing passing through all checkout steps
+
+        Basket basket = new Basket();
+        basket.add("productCode", "myProduct", 10);
+        basket.add("productCode2", "myProduct2", 10);
+        basket.add("productCode3", "myProduct3", 10);
+        basket.add("productCode2", "myProduct2", 15);
+        basket.add("productCode", "myProduct323", 5);
+
+        basket.consolidateItems();
+
+        checkoutPipeline.addStep(checkoutStep1);
+        checkoutPipeline.addStep(checkoutStep1);
+
+        PaymentSummary paymentWeGot = checkoutPipeline.checkout(basket);
+
+        PaymentSummary paymentSummary = new PaymentSummary(15 * basket.getItems().get(0).getProductRetailPrice()
+                + 25 * basket.getItems().get(1).getProductRetailPrice()
+                + 10 * basket.getItems().get(2).getProductRetailPrice());
+
+        assertEquals(paymentWeGot, paymentSummary);
     }
 
 }
